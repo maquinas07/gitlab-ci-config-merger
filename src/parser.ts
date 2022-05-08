@@ -4,6 +4,26 @@ import { assert } from "console";
 import chalk from "chalk";
 import deepExtend from "deep-extend";
 
+function expandReferences(gitlabData: any, recurseData: any): void {
+    for (const [key, value] of Object.entries<any>(recurseData || {})) {
+        if (value && value.referenceData) {
+            recurseData[key] = getSubDataByReference(gitlabData, value.referenceData);
+        } else if (typeof value === "object") {
+            expandReferences(gitlabData, value);
+        }
+    }
+}
+
+function getSubDataByReference(gitlabData: any, referenceData: string[]): void {
+    let gitlabSubData = gitlabData;
+    referenceData.forEach((referencePointer) => {
+        assert(gitlabSubData[referencePointer] != null, `!reference [${referenceData.join(", ")}] is undefined`);
+        gitlabSubData = gitlabSubData[referencePointer];
+    });
+    return gitlabSubData;
+};
+
+
 function parseIncludeList(includeList: any): any[] {
     if (!includeList) {
         return []
@@ -83,6 +103,7 @@ export function parse(files: string[]): any[] {
             } // preserve includes that we don't expand
             expandedYaml[expandedYaml.length - 1].include = includes
             yamls[i] = deepExtend({}, ...expandedYaml)
+            expandReferences(yamls[i], yamls[i]);
         }
         return yamls;
     } catch (e: any) {

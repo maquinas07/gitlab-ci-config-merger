@@ -1,0 +1,27 @@
+{
+  "name": "gl-ci-merger",
+  "version": "0.0.1",
+  "description": "Parses a .gitlab-ci.yml and generates a merged yaml file.",
+  "main": "dist/index.js",
+  "bin": "dist/index.js",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "rm -r dist || mkdir -p dist && tsc",
+    "pkg-linux": "pkg dist/index.js --public -t node16-linux-x64 -o bin/linux/glcm && chmod u+x bin/linux/glcm"
+  },
+  "devDependencies": {
+    "@types/deep-extend": "^0.4.32",
+    "@types/js-yaml": "^4.0.5",
+    "@types/node": "^17.0.31",
+    "@types/yargs": "^17.0.10",
+    "pkg": "^5.6.0",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "deep-extend": "^0.6.0",
+    "js-yaml": "^4.1.0",
+    "yargs": "^17.4.1"
+  }
+}
